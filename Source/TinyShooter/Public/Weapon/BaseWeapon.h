@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "BaseWeapon.generated.h"
 
-class UStaticMeshComponent;
+class USkeletalMeshComponent;
 
 UCLASS()
 class TINYSHOOTER_API ABaseWeapon : public AActor
@@ -20,7 +20,7 @@ public:
     
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-    UStaticMeshComponent* WeaponMesh;
+    USkeletalMeshComponent* WeaponMesh;
 
     virtual void BeginPlay() override;
 };
