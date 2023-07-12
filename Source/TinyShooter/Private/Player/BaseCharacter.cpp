@@ -8,6 +8,7 @@
 #include "Player/CustomCharacterMovementComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/Controller.h"
+#include "Components/WeaponComponent.h"
 
 struct FDamageEvent;
 
@@ -28,6 +29,8 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
+
+    WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 }
 
 // Called when the game starts or when spawned
@@ -57,6 +60,8 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
     PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABaseCharacter::StartRunning);
     PlayerInputComponent->BindAction("Run", IE_Released, this, &ABaseCharacter::StopRunning);
+
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UWeaponComponent::Shoot);
 }
 
 bool ABaseCharacter::IsRunning()
@@ -115,7 +120,6 @@ void ABaseCharacter::OnHealthChanged(float Health, float ChangeAmount, const UDa
 void ABaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
     const auto LandVelocityZ = GetCharacterMovement()->Velocity.Z;
-
     if (-LandVelocityZ < LandedDamageVelocity.X)
     {
         return;

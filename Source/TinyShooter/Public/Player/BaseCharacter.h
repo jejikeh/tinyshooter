@@ -11,6 +11,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UHealthComponent;
 class UTextRenderComponent;
+class UWeaponComponent;
 
 UCLASS()
 class TINYSHOOTER_API ABaseCharacter : public ACharacter
@@ -47,6 +48,9 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     FVector2D LandedDamageAmount = FVector2D(10.0f, 100.0f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+    UWeaponComponent* WeaponComponent;
 
 private:
     bool bIsRunning;
