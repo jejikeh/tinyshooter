@@ -1,0 +1,9 @@
+﻿Language: Cpp
+BasedOnStyle: Microsoft
+IndentWidth: '4'
+UseTab: Never
+TabWidth: '4'
+BreakBeforeBraces: Allman
+ColumnLimit: '140'
+AccessModifierOffset: '-4'
+SoftIncludes: false
