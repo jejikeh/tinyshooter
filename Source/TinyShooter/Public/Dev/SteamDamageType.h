@@ -9,6 +9,6 @@
 UCLASS()
 class TINYSHOOTER_API USteamDamageType : public UDamageType
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 	
 };

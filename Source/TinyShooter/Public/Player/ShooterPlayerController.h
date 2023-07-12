@@ -12,5 +12,5 @@
 UCLASS()
 class TINYSHOOTER_API AShooterPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 };

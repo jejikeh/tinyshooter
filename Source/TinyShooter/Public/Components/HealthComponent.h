@@ -12,11 +12,11 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnHealthChange, float, float, const UDam
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TINYSHOOTER_API UHealthComponent : public UActorComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UHealthComponent();
+    UHealthComponent();
 
     UFUNCTION(BlueprintCallable)
     float GetCurrentHealth();
@@ -46,8 +46,8 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HealHealth")
     float HealModifier = 1.0f;
 
-	// Called when the game starts
-	virtual void BeginPlay() override;
+    // Called when the game starts
+    virtual void BeginPlay() override;
 
 private:
     float Health = 100.0f;

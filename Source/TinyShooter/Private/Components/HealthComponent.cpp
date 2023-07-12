@@ -11,13 +11,13 @@
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+    PrimaryComponentTick.bCanEverTick = false;
 }
 
 // Called when the game starts
 void UHealthComponent::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
     Health = MaxHealth;
     

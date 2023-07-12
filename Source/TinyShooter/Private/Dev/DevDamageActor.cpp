@@ -8,10 +8,10 @@
 ADevDamageActor::ADevDamageActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = true;
 
-	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
-	SetRootComponent(SceneComponent);
+    SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+    SetRootComponent(SceneComponent);
 }
 
 // Called when the game starts or when spawned
@@ -23,8 +23,8 @@ void ADevDamageActor::BeginPlay()
 // Called every frame
 void ADevDamageActor::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+    Super::Tick(DeltaTime);
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 20, SphereColor);
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), Radius, DamageType, {}, this, nullptr, bDoFullDamage);
+    DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 20, SphereColor);
+    UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), Radius, DamageType, {}, this, nullptr, bDoFullDamage);
 }

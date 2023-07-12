@@ -15,20 +15,20 @@ class UTextRenderComponent;
 UCLASS()
 class TINYSHOOTER_API ABaseCharacter : public ACharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
+    ABaseCharacter(const FObjectInitializer& ObjectInitializer);
     
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+    // Called to bind functionality to input
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsRunning();
     
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;

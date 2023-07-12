@@ -12,7 +12,7 @@
 UCLASS()
 class TINYSHOOTER_API UCustomCharacterMovementComponent : public UCharacterMovementComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")

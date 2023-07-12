@@ -33,7 +33,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
     OnHealthChanged(HealthComponent->GetCurrentHealth(), HealthComponent->GetCurrentHealth(), nullptr);
     HealthComponent->OnDeathEvent.AddUObject(this, &ABaseCharacter::OnDeath);
@@ -45,7 +45,7 @@ void ABaseCharacter::BeginPlay()
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
 
     PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ABaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("Move Right / Left", this, &ABaseCharacter::MoveRight);
