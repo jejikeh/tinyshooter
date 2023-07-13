@@ -27,14 +27,14 @@ void UWeaponComponent::Shoot()
 
 void UWeaponComponent::SpawnWeapon()
 {
-    auto Character = Cast<ACharacter>(GetOwner());
-    if (Character)
+    if (auto const Character = Cast<ACharacter>(GetOwner()))
     {
         CurrentWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
         if (CurrentWeapon) 
         {
-            FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false); 
+            const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false); 
             CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttachPointName);
+            CurrentWeapon->SetOwner(Character);
         }
     }
 }
