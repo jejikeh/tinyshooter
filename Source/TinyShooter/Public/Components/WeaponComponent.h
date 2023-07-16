@@ -23,7 +23,8 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
     FName WeaponAttachPointName = "WeaponSocket";
 
-    void Shoot();
+    void StartShoot();
+    void StopShoot();
 
 protected:
     // Called when the game starts

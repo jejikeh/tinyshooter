@@ -33,7 +33,6 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
     WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 }
 
-// Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
@@ -45,7 +44,6 @@ void ABaseCharacter::BeginPlay()
     LandedDelegate.AddDynamic(this, &ABaseCharacter::OnGroundLanded);
 }
 
-// Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -61,7 +59,8 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABaseCharacter::StartRunning);
     PlayerInputComponent->BindAction("Run", IE_Released, this, &ABaseCharacter::StopRunning);
 
-    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UWeaponComponent::Shoot);
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UWeaponComponent::StartShoot);
+    PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UWeaponComponent::StopShoot);
 }
 
 bool ABaseCharacter::IsRunning()

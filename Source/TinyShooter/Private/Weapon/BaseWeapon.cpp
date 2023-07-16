@@ -22,10 +22,12 @@ void ABaseWeapon::BeginPlay()
     Super::BeginPlay();
 }
 
-void ABaseWeapon::Shoot()
+void ABaseWeapon::StartShoot()
 {
-    UE_LOG(LogTemp, Display, TEXT("Shoot!"));
-    MakeShootEffect();
+}
+
+void ABaseWeapon::StopShoot()
+{
 }
 
 AController* ABaseWeapon::GetPlayerController()
@@ -41,32 +43,6 @@ AController* ABaseWeapon::GetPlayerController()
 
 void ABaseWeapon::MakeShootEffect()
 {
-    const auto Controller = GetPlayerController();
-
-    FVector TraceStart;
-    FRotator ViewRotation;
-    Controller->GetPlayerViewPoint(TraceStart, ViewRotation);
-
-    const auto SocketTransform = ItemMesh->GetSocketTransform(MuzzleSocketName);
-    const auto ShootDirection = ViewRotation.Vector();
-    const auto TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
-
-    FHitResult HitResult;
-    GetWorld()->LineTraceSingleByChannel(HitResult, SocketTransform.GetLocation(), TraceEnd, ECollisionChannel::ECC_Visibility);
-
-    if (HitResult.bBlockingHit)
-    {
-        DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Yellow, false, 5.0f);
-
-        ApplyDamage(HitResult);
-    }
-    else 
-    {
-        DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
-    }
-
-    UGameplayStatics::PlaySound2D(this, FireSound);
 }
 
 void ABaseWeapon::ApplyDamage(const FHitResult& HitResult)
@@ -79,4 +55,27 @@ void ABaseWeapon::ApplyDamage(const FHitResult& HitResult)
     }
 
     DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
+}
+
+void ABaseWeapon::SpawnBulletProjectile(const FVector& Direction)
+{
+    const FTransform SpawnTransform(FRotator::ZeroRotator, GetMuzzleTransform().GetLocation());
+    ABulletProjectile* BulletProjectile = GetWorld()->SpawnActorDeferred<ABulletProjectile>(ProjectileClass, SpawnTransform);
+
+    if (BulletProjectile)
+    {
+        BulletProjectile->SetShotDirection(Direction);
+        BulletProjectile->FinishSpawning(SpawnTransform);
+    }
+}
+
+FTransform ABaseWeapon::GetMuzzleTransform()
+{
+    return ItemMesh->GetSocketTransform(MuzzleSocketName);
+}
+
+void ABaseWeapon::GetPlayerViewPoint(FVector& Location, FRotator& Rotation)
+{
+    const auto Controller = GetPlayerController();
+    Controller->GetPlayerViewPoint(Location, Rotation);
 }

@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Item/Item.h"
+#include "Weapon/BulletProjectile.h"
 #include "BaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
 class USoundCue;
+class ABullerProjectile;
 
 UCLASS()
 class TINYSHOOTER_API ABaseWeapon : public AItem
@@ -17,9 +19,10 @@ class TINYSHOOTER_API ABaseWeapon : public AItem
 public: 
     ABaseWeapon();
 
-    virtual void Shoot();
+    virtual void StartShoot();
+    virtual void StopShoot();
     virtual void MakeShootEffect();
-    
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     FName MuzzleSocketName;
@@ -33,8 +36,14 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     USoundCue* FireSound;
 
-    virtual void BeginPlay() override;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
+    TSubclassOf<ABulletProjectile> ProjectileClass;
 
+    virtual void BeginPlay() override;
     void ApplyDamage(const FHitResult& HitResult);
     AController* GetPlayerController();
+
+    virtual void SpawnBulletProjectile(const FVector& Direction);
+    virtual FTransform GetMuzzleTransform();
+    virtual void GetPlayerViewPoint(FVector& Location, FRotator& Rotation);
 };

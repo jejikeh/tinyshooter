@@ -17,11 +17,19 @@ void UWeaponComponent::BeginPlay()
     SpawnWeapon();
 }
 
-void UWeaponComponent::Shoot()
+void UWeaponComponent::StartShoot()
 {
     if (CurrentWeapon)
     {
-        CurrentWeapon->Shoot();
+        CurrentWeapon->StartShoot();
+    }
+}
+
+void UWeaponComponent::StopShoot()
+{
+    if (CurrentWeapon)
+    {
+        CurrentWeapon->StopShoot();
     }
 }
 
