@@ -14,6 +14,7 @@ struct FDamageEvent;
 
 ABaseWeapon::ABaseWeapon()
 {
+    bReplicates = true;
     PrimaryActorTick.bCanEverTick = false;
 }
 
@@ -60,11 +61,15 @@ void ABaseWeapon::ApplyDamage(const FHitResult& HitResult)
 void ABaseWeapon::SpawnBulletProjectile(const FVector& Direction)
 {
     const FTransform SpawnTransform(FRotator::ZeroRotator, GetMuzzleTransform().GetLocation());
+    UE_LOG(LogNet, Warning, TEXT("Client shoot"));
+
+
     ABulletProjectile* BulletProjectile = GetWorld()->SpawnActorDeferred<ABulletProjectile>(ProjectileClass, SpawnTransform);
 
     if (BulletProjectile)
     {
         BulletProjectile->SetShotDirection(Direction);
+        BulletProjectile->SetDamageAmount(DamageAmount);
         BulletProjectile->FinishSpawning(SpawnTransform);
     }
 }

@@ -1,10 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Components/HealthComponent.h"
 #include "GameFramework/Actor.h"
-#include "Dev/FireDamageType.h"
-#include "Dev/SteamDamageType.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 
@@ -46,6 +43,7 @@ void UHealthComponent::OnTakeAnyDamageEvent(AActor *DamagedActor, float Damage, 
     
     if (IsDead())
     {
+        UE_LOG(LogTemp, Warning, TEXT("OnDeath"));
         OnDeathEvent.Broadcast();
     }
     else if (bAutoHeal) 
@@ -57,6 +55,7 @@ void UHealthComponent::OnTakeAnyDamageEvent(AActor *DamagedActor, float Damage, 
 void UHealthComponent::HealUpdate() 
 {
     Health = FMath::Clamp(Health + HealModifier, 0.0f, MaxHealth);
+
     OnHealthChangeEvent.Broadcast(Health, HealModifier, nullptr);
 
     if (FMath::IsNearlyEqual(Health, MaxHealth))

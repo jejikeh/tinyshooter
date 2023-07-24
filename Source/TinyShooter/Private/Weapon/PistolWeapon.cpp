@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Engine/DamageEvents.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Actor.h"
 #include "Sound/SoundCue.h"
 #include "GameFramework/Controller.h"
 
@@ -34,18 +35,6 @@ void APistolWeapon::MakeShootEffect()
 
     FHitResult HitResult;
     GetWorld()->LineTraceSingleByChannel(HitResult, SocketTransform.GetLocation(), TraceEnd, ECollisionChannel::ECC_Visibility);
-
-    if (HitResult.bBlockingHit)
-    {
-        DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Yellow, false, 5.0f);
-
-        ApplyDamage(HitResult);
-    }
-    else 
-    {
-        DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
-    }
 
     UGameplayStatics::PlaySound2D(this, FireSound);
 

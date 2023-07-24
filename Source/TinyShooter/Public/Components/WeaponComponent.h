@@ -18,13 +18,14 @@ public:
     UWeaponComponent();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-    TSubclassOf<ABaseWeapon> WeaponClass;
+    TArray<TSubclassOf<ABaseWeapon>> WeaponClasses;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
     FName WeaponAttachPointName = "WeaponSocket";
 
     void StartShoot();
     void StopShoot();
+    void NextWeapon();
 
 protected:
     // Called when the game starts
@@ -34,5 +35,9 @@ private:
     UPROPERTY()
     ABaseWeapon* CurrentWeapon = nullptr;
 
-    void SpawnWeapon();
+    int32 CurrentWeaponIndex = 0;
+
+    TArray<ABaseWeapon*> Weapons;
+
+    void SpawnWeapon(int32 WeaponIndex);
 };

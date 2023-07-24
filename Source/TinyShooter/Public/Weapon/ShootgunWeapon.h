@@ -13,5 +13,14 @@ UCLASS()
 class TINYSHOOTER_API AShootgunWeapon : public ABaseWeapon
 {
 	GENERATED_BODY()
-	
+
+public:
+    virtual void StartShoot() override;
+    virtual void MakeShootEffect() override;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+    float BulletsSpreadAmmount = 1.5f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+    int32 BulletsCount = 3;
 };

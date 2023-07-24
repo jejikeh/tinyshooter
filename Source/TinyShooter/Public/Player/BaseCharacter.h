@@ -26,7 +26,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsRunning();
-    
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -43,7 +43,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")    
     UTextRenderComponent* HealthTextComponent;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
     FVector2D LandedDamageVelocity = FVector2D(700.0f, 1400.0f);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
@@ -51,6 +51,32 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     UWeaponComponent* WeaponComponent;
+
+    UFUNCTION(Server, Reliable, WithValidation)
+    void Server_StartShoot();
+    bool Server_StartShoot_Validate();
+    void Server_StartShoot_Implementation();
+
+    UFUNCTION(Server, Reliable, WithValidation)
+    void Server_StopShoot();
+    bool Server_StopShoot_Validate();
+    void Server_StopShoot_Implementation();
+
+    UFUNCTION(Server, Reliable, WithValidation)
+    void Server_NextWeapon();
+    bool Server_NextWeapon_Validate();
+    void Server_NextWeapon_Implementation();
+
+    UFUNCTION(NetMulticast, Reliable, WithValidation)
+    void Server_Death();
+    bool Server_Death_Validate();
+    void Server_Death_Implementation();
+
+    // NOTE(): how use health field in HealthComponent + RepNotify
+    UFUNCTION(NetMulticast, Reliable, WithValidation)
+    void Server_UpdateText(float Health);
+    bool Server_UpdateText_Validate(float Health);
+    void Server_UpdateText_Implementation(float Health);
 
 private:
     bool bIsRunning;
@@ -60,6 +86,10 @@ private:
 
     void LookUp(float Amount);
     void LookRight(float Amount);
+
+    void StartShoot();
+    void StopShoot();
+    void NextWeapon();
 
     void StartRunning();
     void StopRunning();

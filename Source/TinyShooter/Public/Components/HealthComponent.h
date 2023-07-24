@@ -31,7 +31,7 @@ public:
     FOnHealthChange OnHealthChangeEvent;
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Health")
     float MaxHealth = 100.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HealHealth")

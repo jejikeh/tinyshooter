@@ -3,6 +3,7 @@
 
 #include "Components/WeaponComponent.h"
 #include "Weapon/BaseWeapon.h"
+#include "Engine/Engine.h"
 #include "GameFramework/Character.h"
 
 UWeaponComponent::UWeaponComponent()
@@ -14,7 +15,7 @@ void UWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    SpawnWeapon();
+    SpawnWeapon(0);
 }
 
 void UWeaponComponent::StartShoot()
@@ -23,26 +24,61 @@ void UWeaponComponent::StartShoot()
     {
         CurrentWeapon->StartShoot();
     }
+
+
+    for (auto Weapon : Weapons)
+    {
+        if (Weapon)
+        {
+            Weapon->StartShoot();
+        }
+    }
 }
 
 void UWeaponComponent::StopShoot()
-{
+{   
     if (CurrentWeapon)
     {
         CurrentWeapon->StopShoot();
     }
+
+    for (const auto Weapon : Weapons)
+    {
+        if (Weapon)
+        {
+            Weapon->StopShoot();
+        }
+    }
 }
 
-void UWeaponComponent::SpawnWeapon()
+void UWeaponComponent::NextWeapon()
 {
+    CurrentWeaponIndex = (CurrentWeaponIndex + 1) % WeaponClasses.Num();
+    SpawnWeapon(CurrentWeaponIndex);
+}
+
+void UWeaponComponent::SpawnWeapon(int32 WeaponIndex)
+{
+
     if (auto const Character = Cast<ACharacter>(GetOwner()))
     {
-        CurrentWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
         if (CurrentWeapon) 
         {
+            CurrentWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+            Weapons.Add(CurrentWeapon);
+            
+            AActor* CurrentWeaponActor = Cast<AActor>(CurrentWeapon);
+            CurrentWeaponActor->Destroy();
+            CurrentWeapon = nullptr;
+        }
+
+        if (const auto SpawnWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClasses[WeaponIndex]))
+        {
             const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false); 
-            CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttachPointName);
-            CurrentWeapon->SetOwner(Character);
+            SpawnWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttachPointName);
+            SpawnWeapon->SetOwner(Character);
+
+            CurrentWeapon = SpawnWeapon;
         }
     }
 }
