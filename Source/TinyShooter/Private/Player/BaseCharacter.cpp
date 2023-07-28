@@ -83,7 +83,6 @@ bool ABaseCharacter::Server_StartShoot_Validate()
 void ABaseCharacter::Server_StartShoot_Implementation()
 {
     WeaponComponent->StartShoot();
-    UE_LOG(LogTemp, Warning, TEXT("Server_StartShoot"));
 }
 
 bool ABaseCharacter::Server_StopShoot_Validate()
@@ -94,7 +93,6 @@ bool ABaseCharacter::Server_StopShoot_Validate()
 void ABaseCharacter::Server_StopShoot_Implementation()
 {
     WeaponComponent->StopShoot();
-    UE_LOG(LogTemp, Warning, TEXT("Server_StopShoot"));
 }
 
 bool ABaseCharacter::Server_NextWeapon_Validate()
@@ -105,7 +103,6 @@ bool ABaseCharacter::Server_NextWeapon_Validate()
 void ABaseCharacter::Server_NextWeapon_Implementation()
 {
     WeaponComponent->NextWeapon();
-    UE_LOG(LogTemp, Warning, TEXT("Server_NextWeapon"));
 }
 
 bool ABaseCharacter::Server_Death_Validate()
@@ -115,7 +112,6 @@ bool ABaseCharacter::Server_Death_Validate()
 
 void ABaseCharacter::Server_Death_Implementation()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Server_OnDeath"));
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     GetMesh()->SetSimulatePhysics(true);
     GetCharacterMovement()->DisableMovement();
@@ -135,7 +131,27 @@ void ABaseCharacter::Server_UpdateText_Implementation(float Health)
 {
     const auto HealthString = FString::Printf(TEXT("%.0f"), Health);
     HealthTextComponent->SetText(FText::FromString(HealthString));
-    UE_LOG(LogTemp, Warning, TEXT("Server_UpdateText"));
+    HealthFromComponent = Health;
+}
+
+bool ABaseCharacter::Server_PlayWeaponSwitchAnimation_Validate()
+{
+    return true;
+}
+
+void ABaseCharacter::Server_PlayWeaponSwitchAnimation_Implementation()
+{
+    WeaponComponent->PlayWeaponAnimation();
+}
+
+bool ABaseCharacter::Server_PlayWeaponShootAnimation_Validate()
+{
+    return true;
+}
+
+void ABaseCharacter::Server_PlayWeaponShootAnimation_Implementation()
+{
+    WeaponComponent->PlayShootAnimation();
 }
 
 void ABaseCharacter::MoveForward(float Direction)
@@ -163,6 +179,12 @@ void ABaseCharacter::StartShoot()
     if (!HasAuthority())
     {
         Server_StartShoot();
+        Server_PlayWeaponShootAnimation();
+    }
+    else
+    {
+        WeaponComponent->StartShoot();
+        Server_PlayWeaponShootAnimation();
     }
 }
 
@@ -172,6 +194,10 @@ void ABaseCharacter::StopShoot()
     {
         Server_StopShoot();
     }
+    else
+    {
+        WeaponComponent->StopShoot();
+    }
 }
 
 void ABaseCharacter::NextWeapon()
@@ -179,6 +205,12 @@ void ABaseCharacter::NextWeapon()
     if (!HasAuthority())
     {
         Server_NextWeapon();
+        Server_PlayWeaponSwitchAnimation();
+    }
+    else
+    {
+        WeaponComponent->NextWeapon();
+        Server_PlayWeaponSwitchAnimation();
     }
 }
 
@@ -194,21 +226,12 @@ void ABaseCharacter::StopRunning()
 
 void ABaseCharacter::OnDeath() 
 {
-    UE_LOG(LogTemp, Warning, TEXT("Client_OnDeath"));
-    if (!HasAuthority())
-    {
-        Server_Death();
-    }
+    Server_Death();
 }
 
 void ABaseCharacter::OnHealthChanged(float Health, float ChangeAmount, const UDamageType *DamageType)
 {
-    UE_LOG(LogTemp, Warning, TEXT("OnHealthChanged"));
     Server_UpdateText(Health);
-    if (Health == 0)
-    {
-        Server_Death();
-    }
 }
 
 void ABaseCharacter::OnGroundLanded(const FHitResult& Hit)

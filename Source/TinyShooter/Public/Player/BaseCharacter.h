@@ -27,6 +27,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsRunning();
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    float HealthFromComponent;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -66,17 +69,26 @@ protected:
     void Server_NextWeapon();
     bool Server_NextWeapon_Validate();
     void Server_NextWeapon_Implementation();
-
+    
     UFUNCTION(NetMulticast, Reliable, WithValidation)
     void Server_Death();
     bool Server_Death_Validate();
     void Server_Death_Implementation();
 
-    // NOTE(): how use health field in HealthComponent + RepNotify
     UFUNCTION(NetMulticast, Reliable, WithValidation)
     void Server_UpdateText(float Health);
     bool Server_UpdateText_Validate(float Health);
     void Server_UpdateText_Implementation(float Health);
+
+    UFUNCTION(NetMulticast, Reliable, WithValidation)
+    void Server_PlayWeaponSwitchAnimation();
+    bool Server_PlayWeaponSwitchAnimation_Validate();
+    void Server_PlayWeaponSwitchAnimation_Implementation();
+
+    UFUNCTION(NetMulticast, Reliable, WithValidation)
+    void Server_PlayWeaponShootAnimation();
+    bool Server_PlayWeaponShootAnimation_Validate();
+    void Server_PlayWeaponShootAnimation_Implementation();
 
 private:
     bool bIsRunning;

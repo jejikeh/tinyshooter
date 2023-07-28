@@ -47,16 +47,12 @@ void ABulletProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 {
     MovementComponent->StopMovementImmediately();
     
-    UGameplayStatics::ApplyRadialDamage(
-        GetWorld(), 
-        DamageAmount, 
-        GetActorLocation(), 
-        DamageRadius, 
-        UDamageType::StaticClass(),
-        {},
-        this,
+    UGameplayStatics::ApplyDamage(
+        OtherActor,
+        DamageAmount,
         nullptr,
-        true);
+        this,
+        UDamageType::StaticClass());
 
     DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Yellow, false, 5.0f);
 

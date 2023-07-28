@@ -14,8 +14,6 @@ UWeaponComponent::UWeaponComponent()
 void UWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
-
-    SpawnWeapon(0);
 }
 
 void UWeaponComponent::StartShoot()
@@ -23,15 +21,7 @@ void UWeaponComponent::StartShoot()
     if (CurrentWeapon)
     {
         CurrentWeapon->StartShoot();
-    }
-
-
-    for (auto Weapon : Weapons)
-    {
-        if (Weapon)
-        {
-            Weapon->StartShoot();
-        }
+        PlayShootAnimation();
     }
 }
 
@@ -40,14 +30,6 @@ void UWeaponComponent::StopShoot()
     if (CurrentWeapon)
     {
         CurrentWeapon->StopShoot();
-    }
-
-    for (const auto Weapon : Weapons)
-    {
-        if (Weapon)
-        {
-            Weapon->StopShoot();
-        }
     }
 }
 
@@ -62,23 +44,47 @@ void UWeaponComponent::SpawnWeapon(int32 WeaponIndex)
 
     if (auto const Character = Cast<ACharacter>(GetOwner()))
     {
+        if (WeaponIndex < 0 || WeaponIndex >= WeaponClasses.Num())
+        {
+            WeaponIndex = 0;
+        }
+        
         if (CurrentWeapon) 
         {
             CurrentWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-            Weapons.Add(CurrentWeapon);
-            
-            AActor* CurrentWeaponActor = Cast<AActor>(CurrentWeapon);
-            CurrentWeaponActor->Destroy();
+            CurrentWeapon->Destroy();
             CurrentWeapon = nullptr;
         }
-
+        
         if (const auto SpawnWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClasses[WeaponIndex]))
         {
             const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false); 
             SpawnWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttachPointName);
             SpawnWeapon->SetOwner(Character);
-
             CurrentWeapon = SpawnWeapon;
+            PlayWeaponAnimation();
         }
     }
+}
+
+void UWeaponComponent::PlayWeaponAnimation()
+{
+    PlayAnimMontage(EquipAnimMontage);
+}
+
+void UWeaponComponent::PlayShootAnimation()
+{
+    PlayAnimMontage(ShootAnimation);
+}
+
+void UWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
+{
+    const auto Character = Cast<ACharacter>(GetOwner());
+
+    if (!Character)
+    {
+        return;
+    }
+
+    Character->PlayAnimMontage(Animation);
 }

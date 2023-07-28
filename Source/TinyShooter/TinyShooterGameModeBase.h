@@ -13,7 +13,4 @@ class TINYSHOOTER_API ATinyShooterGameModeBase : public AGameModeBase
 
 public:
     ATinyShooterGameModeBase();
-    
-    virtual void BeginPlay() override;
-
 };

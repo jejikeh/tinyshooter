@@ -27,6 +27,9 @@ public:
     UFUNCTION()
     void OnTakeAnyDamageEvent(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser );
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    float GetHealthPercent();
+
     FOnDeath OnDeathEvent;
     FOnHealthChange OnHealthChangeEvent;
 

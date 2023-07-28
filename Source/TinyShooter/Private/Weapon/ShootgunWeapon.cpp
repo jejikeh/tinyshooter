@@ -39,8 +39,6 @@ void AShootgunWeapon::MakeShootEffect()
     FHitResult HitResult;
     GetWorld()->LineTraceSingleByChannel(HitResult, SocketTransform.GetLocation(), TraceEnd, ECollisionChannel::ECC_Visibility);
 
-    UGameplayStatics::PlaySound2D(this, FireSound);
-
     const auto EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
     const auto BulletDirection = (EndPoint - GetMuzzleTransform().GetLocation()).GetSafeNormal();
 

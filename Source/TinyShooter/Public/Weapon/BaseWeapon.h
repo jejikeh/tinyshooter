@@ -9,7 +9,7 @@
 
 class USkeletalMeshComponent;
 class USoundCue;
-class ABullerProjectile;
+class ABulletProjectile;
 
 UCLASS()
 class TINYSHOOTER_API ABaseWeapon : public AItem

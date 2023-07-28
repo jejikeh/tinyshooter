@@ -23,9 +23,17 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
     FName WeaponAttachPointName = "WeaponSocket";
 
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* EquipAnimMontage;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* ShootAnimation;
+
     void StartShoot();
     void StopShoot();
     void NextWeapon();
+    void PlayWeaponAnimation();
+    void PlayShootAnimation();
 
 protected:
     // Called when the game starts
@@ -37,7 +45,7 @@ private:
 
     int32 CurrentWeaponIndex = 0;
 
-    TArray<ABaseWeapon*> Weapons;
-
     void SpawnWeapon(int32 WeaponIndex);
+
+    void PlayAnimMontage(UAnimMontage* Animation);
 };

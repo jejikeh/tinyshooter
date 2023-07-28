@@ -29,6 +29,11 @@ float UHealthComponent::GetCurrentHealth()
     return Health;
 }
 
+float UHealthComponent::GetHealthPercent()
+{
+    return Health / MaxHealth;
+}
+
 bool UHealthComponent::IsDead()
 {
     return FMath::IsNearlyZero(Health);
