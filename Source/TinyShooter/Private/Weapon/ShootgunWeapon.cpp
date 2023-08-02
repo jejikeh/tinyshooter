@@ -27,6 +27,11 @@ FVector ShiftVector(const FVector& InVector, float Shift)
 
 void AShootgunWeapon::MakeShootEffect()
 {
+    if (IsCurrentAmmoEmpty())
+    {
+        return;
+    }
+    
     FVector TraceStart;
     FRotator ViewRotation;
     GetPlayerViewPoint(TraceStart, ViewRotation);
@@ -45,5 +50,6 @@ void AShootgunWeapon::MakeShootEffect()
     for (int i = 0; i < BulletsCount; ++i)
     {
         SpawnBulletProjectile(ShiftVector(BulletDirection, BulletsSpreadAmmount));
+        DecreaseCurrentAmmo();
     }
 }

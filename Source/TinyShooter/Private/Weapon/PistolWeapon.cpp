@@ -24,6 +24,11 @@ void APistolWeapon::StopShoot()
 
 void APistolWeapon::MakeShootEffect()
 {
+    if (IsCurrentAmmoEmpty())
+    {
+        return;
+    }
+    
     FVector TraceStart;
     FRotator ViewRotation;
     GetPlayerViewPoint(TraceStart, ViewRotation);
@@ -40,4 +45,5 @@ void APistolWeapon::MakeShootEffect()
     const auto BulletDirection = (EndPoint - GetMuzzleTransform().GetLocation()).GetSafeNormal();
 
     SpawnBulletProjectile(BulletDirection);
+    DecreaseCurrentAmmo();
 }

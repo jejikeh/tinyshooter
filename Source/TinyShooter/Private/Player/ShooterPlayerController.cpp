@@ -3,3 +3,9 @@
 
 #include "Player/ShooterPlayerController.h"
 
+void AShooterPlayerController::BeginPlay()
+{
+    Super::BeginPlay();
+    
+    SetInputMode(FInputModeGameOnly());
+}

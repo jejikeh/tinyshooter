@@ -2,25 +2,61 @@
 
 
 #include "UI/BaseGameHUD.h"
-#include "Engine/Canvas.h"
+
+#include "TinyShooterGameState.h"
+#include "Blueprint/UserWidget.h"
 
 void ABaseGameHUD::DrawHUD() 
 {
 	Super::DrawHUD();
-	DrawCrosshair();
 }
 
-void ABaseGameHUD::DrawCrosshair()
+void ABaseGameHUD::BeginPlay()
 {
-	int32 SizeX = Canvas->SizeX;
-	int32 SizeY = Canvas->SizeY;
+    Super::BeginPlay();
+    
+    GameStateWidgets.Add(
+        EGameState::InProgress,
+        CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
 
-	const TInterval<float> Center(SizeX * 0.5f, SizeY * 0.5f);
+    //GameStateWidgets.Add(
+    //    EGameState::Finished,
+    //    CreateWidget<UUserWidget>(GetWorld(), GameFinishHUDWidgetClass));
 
-	const float HalfLineSize = 10.0f;
-	const float LineThickness = 2.0f;
-	const FLinearColor LineColor = FLinearColor::Green;
+    for (const auto& WidgetTuple : GameStateWidgets)
+    {
+        const auto Widget = WidgetTuple.Value;
+        if (!Widget)
+        {
+            continue;
+        }
 
-	DrawLine(Center.Min - HalfLineSize, Center.Max, Center.Min + HalfLineSize, Center.Max, LineColor, LineThickness);
-	DrawLine(Center.Min, Center.Max - HalfLineSize, Center.Min, Center.Max + HalfLineSize, LineColor, LineThickness);
+        Widget->AddToViewport();
+        Widget->SetVisibility(ESlateVisibility::Visible);
+    }
+
+    if (const auto GameState = Cast<ATinyShooterGameState>(GetWorld()->GetGameState()))
+    {
+        GameState->OnGameStateChanged.AddUObject(this, &ABaseGameHUD::OnGameStateChanged);
+    }
+}
+
+/**
+ * @brief This function is called when the game state changes on the all clients
+ * @param State The new game state
+ */
+void ABaseGameHUD::OnGameStateChanged(EGameState State)
+{
+    if (CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
+
+    if (GameStateWidgets.Contains(State))
+    {
+        CurrentWidget = GameStateWidgets[State];
+    }
+    
+    CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+    UE_LOG(LogTemp, Warning, TEXT("State: %s"), *UEnum::GetValueAsString(State));
 }

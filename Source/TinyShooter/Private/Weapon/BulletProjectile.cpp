@@ -29,7 +29,7 @@ void ABulletProjectile::BeginPlay()
     Super::BeginPlay();
     MovementComponent->Velocity = ShotDirection * MovementComponent->InitialSpeed;
     CollisionComponent->OnComponentHit.AddDynamic(this, &ABulletProjectile::OnHit);
-    // CollisionComponent->IgnoreActorWhenMoving(GetOwner(), true);
+    CollisionComponent->IgnoreActorWhenMoving(GetOwner(), true);
     SetLifeSpan(4.0f);
 }
 

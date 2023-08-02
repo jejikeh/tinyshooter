@@ -67,6 +67,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAction("Fire", IE_Released, this, &ABaseCharacter::StopShoot);
 
     PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, this, &ABaseCharacter::NextWeapon);
+    PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &ABaseCharacter::Reload);
 }
 
 bool ABaseCharacter::IsRunning()
@@ -83,6 +84,7 @@ bool ABaseCharacter::Server_StartShoot_Validate()
 void ABaseCharacter::Server_StartShoot_Implementation()
 {
     WeaponComponent->StartShoot();
+    Server_Multicast_PlayWeaponShootAnimation();
 }
 
 bool ABaseCharacter::Server_StopShoot_Validate()
@@ -102,7 +104,22 @@ bool ABaseCharacter::Server_NextWeapon_Validate()
 
 void ABaseCharacter::Server_NextWeapon_Implementation()
 {
-    WeaponComponent->NextWeapon();
+    Server_Multicast_SetNextWeaponAnimRefs();
+    WeaponComponent->Server_NextWeapon();
+    Server_Multicast_NextWeaponAnimPlay();
+}
+
+/**
+ * @brief Multicast call to set the animation refs on the all clients
+ */
+void ABaseCharacter::Server_Multicast_SetNextWeaponAnimRefs_Implementation()
+{
+    WeaponComponent->SetNextWeaponAnimRefs();
+}
+
+void ABaseCharacter::Server_Multicast_NextWeaponAnimPlay_Implementation()
+{
+    WeaponComponent->PlayWeaponEquipAnimation();
 }
 
 bool ABaseCharacter::Server_Death_Validate()
@@ -120,6 +137,8 @@ void ABaseCharacter::Server_Death_Implementation()
     {
         Controller->ChangeState(NAME_Spectating);
     }
+
+    bIsDead = true;
 }
 
 bool ABaseCharacter::Server_UpdateText_Validate(float Health)
@@ -134,24 +153,30 @@ void ABaseCharacter::Server_UpdateText_Implementation(float Health)
     HealthFromComponent = Health;
 }
 
-bool ABaseCharacter::Server_PlayWeaponSwitchAnimation_Validate()
+bool ABaseCharacter::Server_ReloadWeapon_Validate()
 {
     return true;
 }
 
-void ABaseCharacter::Server_PlayWeaponSwitchAnimation_Implementation()
+void ABaseCharacter::Server_ReloadWeapon_Implementation()
 {
-    WeaponComponent->PlayWeaponAnimation();
+    WeaponComponent->Reload();
+    Server_PlayWeaponReloadAnimation();
 }
 
-bool ABaseCharacter::Server_PlayWeaponShootAnimation_Validate()
-{
-    return true;
-}
-
-void ABaseCharacter::Server_PlayWeaponShootAnimation_Implementation()
+void ABaseCharacter::Server_Multicast_PlayWeaponShootAnimation_Implementation()
 {
     WeaponComponent->PlayShootAnimation();
+}
+
+bool ABaseCharacter::Server_PlayWeaponReloadAnimation_Validate()
+{
+    return true;
+}
+
+void ABaseCharacter::Server_PlayWeaponReloadAnimation_Implementation()
+{
+    WeaponComponent->PlayReloadAnimation();
 }
 
 void ABaseCharacter::MoveForward(float Direction)
@@ -179,12 +204,11 @@ void ABaseCharacter::StartShoot()
     if (!HasAuthority())
     {
         Server_StartShoot();
-        Server_PlayWeaponShootAnimation();
     }
     else
     {
         WeaponComponent->StartShoot();
-        Server_PlayWeaponShootAnimation();
+        Server_Multicast_PlayWeaponShootAnimation();
     }
 }
 
@@ -205,12 +229,23 @@ void ABaseCharacter::NextWeapon()
     if (!HasAuthority())
     {
         Server_NextWeapon();
-        Server_PlayWeaponSwitchAnimation();
     }
     else
     {
-        WeaponComponent->NextWeapon();
-        Server_PlayWeaponSwitchAnimation();
+        // or its bad to use Implementation
+        Server_NextWeapon_Implementation();
+    }
+}
+
+void ABaseCharacter::Reload()
+{
+    if (!HasAuthority())
+    {
+        Server_ReloadWeapon();
+    }
+    else
+    {
+        Server_ReloadWeapon_Implementation();
     }
 }
 

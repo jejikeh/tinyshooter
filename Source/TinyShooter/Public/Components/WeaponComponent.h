@@ -4,9 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Weapon/BaseWeapon.h"
 #include "WeaponComponent.generated.h"
 
+struct FUIWeaponData;
+struct FAmmoData;
 class ABaseWeapon;
+
+USTRUCT(BlueprintType)
+struct FWeaponData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "Weapon")
+    TSubclassOf<ABaseWeapon> WeaponClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "Animation")
+    UAnimMontage* ReloadAnimMontage;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* ShootAnimMontage;
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TINYSHOOTER_API UWeaponComponent : public UActorComponent
@@ -18,34 +36,52 @@ public:
     UWeaponComponent();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-    TArray<TSubclassOf<ABaseWeapon>> WeaponClasses;
+    TArray<FWeaponData> WeaponData;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
     FName WeaponAttachPointName = "WeaponSocket";
 
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     UAnimMontage* EquipAnimMontage;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    UAnimMontage* ShootAnimation;
-
+    
+    bool GetCurrentAmmoData(FAmmoData& AmmoData) const;
+    bool GetWeaponUIData(FUIWeaponData& WeaponUIData) const;
+    
     void StartShoot();
-    void StopShoot();
-    void NextWeapon();
-    void PlayWeaponAnimation();
+    void StopShoot() const;
+    void Server_NextWeapon();
+    void SetAnimMontageReference(const TArray<FWeaponData>::ElementType &CurrentWeaponData);
+    void SetNextWeaponAnimRefs();
+    void Reload();
+    void PlayWeaponEquipAnimation() const;
     void PlayShootAnimation();
+    void PlayReloadAnimation();
+
+    /*
+    UFUNCTION(Client, Reliable)
+    void Server_Multicast_DecreaseAmmo();
+    void Server_Multicast_DecreaseAmmo_Implementation();
+    */
 
 protected:
     // Called when the game starts
     virtual void BeginPlay() override;
 
+    virtual void BeginDestroy() override;
+
 private:
-    UPROPERTY()
+    UPROPERTY(Replicated)
     ABaseWeapon* CurrentWeapon = nullptr;
+
+    UPROPERTY()
+    UAnimMontage* CurrentReloadAnimMontage = nullptr;
+
+    UPROPERTY()
+    UAnimMontage* CurrentShootAnimMontage = nullptr;
 
     int32 CurrentWeaponIndex = 0;
 
-    void SpawnWeapon(int32 WeaponIndex);
+    void Server_SpawnWeapon(int32 WeaponIndex);
 
-    void PlayAnimMontage(UAnimMontage* Animation);
+    void PlayAnimMontage(UAnimMontage* Animation) const;
 };

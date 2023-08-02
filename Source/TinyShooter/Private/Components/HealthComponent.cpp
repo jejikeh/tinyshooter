@@ -48,7 +48,6 @@ void UHealthComponent::OnTakeAnyDamageEvent(AActor *DamagedActor, float Damage, 
     
     if (IsDead())
     {
-        UE_LOG(LogTemp, Warning, TEXT("OnDeath"));
         OnDeathEvent.Broadcast();
     }
     else if (bAutoHeal) 
