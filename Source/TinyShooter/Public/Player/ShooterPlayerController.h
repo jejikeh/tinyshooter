@@ -6,11 +6,17 @@
 #include "GameFramework/PlayerController.h"
 #include "ShooterPlayerController.generated.h"
 
-/**
- * maybe in the future i can enchanced default unreal movement to make it more quake-like style
- */
 UCLASS()
 class TINYSHOOTER_API AShooterPlayerController : public APlayerController
 {
     GENERATED_BODY()
+
+public:
+    UFUNCTION(Client, Reliable)
+    void Client_OnGameStateChanged(EGameState State);
+    void Client_OnGameStateChanged_Implementation(EGameState State);
+
+protected:
+    virtual void BeginPlay() override;
+
 };

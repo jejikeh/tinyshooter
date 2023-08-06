@@ -27,11 +27,14 @@ public:
     UFUNCTION()
     void OnTakeAnyDamageEvent(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser );
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    float GetHealthPercent();
+
     FOnDeath OnDeathEvent;
     FOnHealthChange OnHealthChangeEvent;
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Health")
     float MaxHealth = 100.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HealHealth")
