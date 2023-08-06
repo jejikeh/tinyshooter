@@ -64,9 +64,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
     float DamageAmount = 10.0f;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-    USoundCue* FireSound;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Weapon")
     TSubclassOf<ABulletProjectile> ProjectileClass;
 

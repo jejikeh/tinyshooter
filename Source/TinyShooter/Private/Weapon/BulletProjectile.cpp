@@ -54,7 +54,5 @@ void ABulletProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
         this,
         UDamageType::StaticClass());
 
-    DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Yellow, false, 5.0f);
-
     Destroy();
 }

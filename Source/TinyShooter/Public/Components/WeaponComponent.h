@@ -9,6 +9,7 @@
 
 struct FUIWeaponData;
 struct FAmmoData;
+class USoundCue;
 class ABaseWeapon;
 
 USTRUCT(BlueprintType)
@@ -24,6 +25,9 @@ struct FWeaponData
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     UAnimMontage* ShootAnimMontage;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Audio")
+    USoundCue* FireSound;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -78,6 +82,9 @@ private:
 
     UPROPERTY()
     UAnimMontage* CurrentShootAnimMontage = nullptr;
+
+    UPROPERTY()
+    USoundCue* CurrentShootSound = nullptr;
 
     int32 CurrentWeaponIndex = 0;
 

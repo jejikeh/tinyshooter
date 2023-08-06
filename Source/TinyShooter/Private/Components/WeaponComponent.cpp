@@ -6,6 +6,8 @@
 #include "Engine/Engine.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 UWeaponComponent::UWeaponComponent()
 {
@@ -105,6 +107,7 @@ void UWeaponComponent::SetNextWeaponAnimRefs()
 {
     CurrentShootAnimMontage = CurrentWeaponData.ShootAnimMontage;
     CurrentReloadAnimMontage = CurrentWeaponData.ReloadAnimMontage;
+    CurrentShootSound = CurrentWeaponData.FireSound;
 }
 
 void UWeaponComponent::Reload()
@@ -173,6 +176,7 @@ void UWeaponComponent::PlayShootAnimation()
     }
     
     PlayAnimMontage(CurrentShootAnimMontage);
+    UGameplayStatics::PlaySound2D(GetWorld(), CurrentShootSound, 1.0f, 1.0f, 0.0f);
 }
 
 void UWeaponComponent::PlayReloadAnimation()

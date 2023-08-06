@@ -11,6 +11,7 @@ void ABaseGameHUD::DrawHUD()
 	Super::DrawHUD();
 }
 
+
 void ABaseGameHUD::BeginPlay()
 {
     Super::BeginPlay();
@@ -19,9 +20,9 @@ void ABaseGameHUD::BeginPlay()
         EGameState::InProgress,
         CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
 
-    //GameStateWidgets.Add(
-    //    EGameState::Finished,
-    //    CreateWidget<UUserWidget>(GetWorld(), GameFinishHUDWidgetClass));
+    GameStateWidgets.Add(
+        EGameState::Finished,
+        CreateWidget<UUserWidget>(GetWorld(), GameFinishHUDWidgetClass));
 
     for (const auto& WidgetTuple : GameStateWidgets)
     {
@@ -32,7 +33,11 @@ void ABaseGameHUD::BeginPlay()
         }
 
         Widget->AddToViewport();
-        Widget->SetVisibility(ESlateVisibility::Visible);
+        Widget->SetVisibility(ESlateVisibility::Hidden);
+
+        // this hack is used bc when new player connected, gamemode gets only player controller, while the ui is not initialze
+        CurrentWidget = GameStateWidgets[EGameState::InProgress];
+        CurrentWidget->SetVisibility(ESlateVisibility::Visible);
     }
 
     if (const auto GameState = Cast<ATinyShooterGameState>(GetWorld()->GetGameState()))

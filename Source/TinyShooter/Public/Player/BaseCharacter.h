@@ -33,9 +33,16 @@ public:
 
     bool bIsDead = false;
 
+    UFUNCTION(Client, Reliable)
+    void Client_SetRoundInfrormationToGameState(float RoundTime, int32 Round);
+    void Client_SetRoundInfrormationToGameState_Implementation(float RoundTime, int32 Round);
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
+
+    UPROPERTY()
+    TSoftClassPtr<ABaseWeapon> Weapon;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;
@@ -106,6 +113,7 @@ protected:
     void Server_PlayWeaponReloadAnimation_Implementation();
 
 private:
+    UPROPERTY(Replicated)
     bool bIsRunning;
     
     void MoveForward(float Direction);

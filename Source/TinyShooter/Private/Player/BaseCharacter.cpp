@@ -9,6 +9,10 @@
 #include "Engine/DamageEvents.h"
 #include "GameFramework/Controller.h"
 #include "Components/WeaponComponent.h"
+#include "TinyShooterGameState.h"
+#include "Net/UnrealNetwork.h"
+#include <Kismet/GameplayStatics.h>
+
 
 struct FDamageEvent;
 
@@ -87,6 +91,17 @@ void ABaseCharacter::Server_StartShoot_Implementation()
     Server_Multicast_PlayWeaponShootAnimation();
 }
 
+void ABaseCharacter::Client_SetRoundInfrormationToGameState_Implementation(float RoundTime, int32 Round)
+{
+    ATinyShooterGameState* const MyGameState = GetWorld() != NULL ? GetWorld()->GetGameState<ATinyShooterGameState>() : NULL;
+
+    if (MyGameState)
+    {
+        MyGameState->CurrentRound = Round;
+        MyGameState->CurrentRoundTime = RoundTime;
+    }
+}
+
 bool ABaseCharacter::Server_StopShoot_Validate()
 {
     return true;
@@ -139,6 +154,12 @@ void ABaseCharacter::Server_Death_Implementation()
     }
 
     bIsDead = true;
+
+    ATinyShooterGameModeBase* GameMode = Cast<ATinyShooterGameModeBase>(UGameplayStatics::GetGameMode(this));
+    if (GameMode)
+    {
+        GameMode->CurrentLivePlayers--;
+    }
 }
 
 bool ABaseCharacter::Server_UpdateText_Validate(float Health)
@@ -279,4 +300,10 @@ void ABaseCharacter::OnGroundLanded(const FHitResult& Hit)
 
     const auto FallDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamageAmount, -LandVelocityZ);
     TakeDamage(FallDamage, FDamageEvent{}, nullptr, nullptr);
+}
+
+void ABaseCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(ABaseCharacter, bIsRunning);
 }

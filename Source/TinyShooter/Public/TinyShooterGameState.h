@@ -16,7 +16,14 @@ public:
     virtual void BeginPlay() override;
 
     FOnGameStateChangedSignature OnGameStateChanged;
+
     void GameStateChanged(EGameState State);
+
+    UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+    int32 CurrentRound = 0;
+    
+    UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+    float CurrentRoundTime = 0;
 
 protected:
     EGameState CurrentRoundState = EGameState::NotStarted;

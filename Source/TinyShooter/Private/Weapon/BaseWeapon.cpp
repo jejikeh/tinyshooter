@@ -104,21 +104,16 @@ void ABaseWeapon::DecreaseCurrentAmmo()
 {
     CurrentAmmo.Ammo--;
     LogAmmo();
-
-    if (IsReloadRequired() && !IsCurrentAmmoEmpty())
-    {
-        Reload();
-    }
 }
 
 bool ABaseWeapon::IsCurrentAmmoEmpty() const
 {
-    return CurrentAmmo.Clips == 0 && !CurrentAmmo.bInfinite && IsReloadRequired();
+    return (CurrentAmmo.Clips == 0 || IsReloadRequired()) && !CurrentAmmo.bInfinite;
 }
 
 bool ABaseWeapon::IsReloadRequired() const
 {
-    return CurrentAmmo.Ammo == 0;
+    return CurrentAmmo.Ammo <= 0;
 }
 
 void ABaseWeapon::Reload()

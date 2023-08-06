@@ -45,6 +45,16 @@ public:
     virtual void StartPlay() override;
 
     FOnGameStateChangedSignature OnGameStateChanged;
+    
+    // this better to store in FGameData Struct
+    UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+    int32 CurrentRound = 0;
+    
+    UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+    float CurrentRoundTime = 0;
+
+    // TODO: move to private property and implement getters and setters
+    int32 CurrentLivePlayers = 0;
 
 protected:
     EGameState CurrentRoundState = EGameState::NotStarted;
@@ -52,8 +62,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FGameData GameData;
 
-    int32 CurrentRound = 0;
-    float CurrentRoundTime = 0;
     FTimerHandle RoundTimerHandle;
     
     void StartRound();
@@ -65,4 +73,7 @@ protected:
     void FinishGame();
 
     void SetGameState(EGameState State);
+    virtual void GenericPlayerInitialization(AController* C) override;
+
+    bool bGameWasStarted;
 };

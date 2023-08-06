@@ -1,8 +1,10 @@
-/.idea
-/.vs
-/.vscode
-/Content
-/DerivedDataCache
-/Intermediate
-/Platforms
 /Saved
+/Platforms
+/Content
+/.vs
+/.idea
+/.git
+/.vscode
+/Intermediate
+/Plugins/AdvancedSessions/Intermediate
+/Plugins/AdvancedSteamSessions/Intermediate
