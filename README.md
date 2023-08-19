@@ -5,7 +5,7 @@ tinyshooter - is a Multiplayer Shooter Game written in C++ with Unreal Engine 5 
 # Resources
 This Demo Shooter contains assets from [Unreal Engine Lyra](https://github.com/EpicGames/UnrealEngine/tree/ue5-main/Samples/Games/Lyra).
 
-Binary is available here: [releases](https://github.com/Vention/TinyShooter/releases)
+Binaries available here: [Releases page](https://github.com/jejikeh/tinyshooter/releases)
 
 <p float="left">
     <img src=".github/map_overview.png" width=45% height=45%> 
